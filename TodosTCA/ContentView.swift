@@ -9,10 +9,36 @@
 import SwiftUI
 import ComposableArchitecture
 
+/**************************
+ Todo Domain
+ **************************/
+
 struct Todo: Equatable, Identifiable {
   var description = ""
   let id: UUID
   var isComplete = false
+}
+
+//want a reducer to focus on domain of a single todo:
+// ForEach higher order reducer to abstract away lists of states
+// notice no index passed in and no "todo" preceding case name
+enum TodoAction {
+  case checkboxTapped
+  case textFieldChanged(String)
+}
+
+struct TodoEnvironment { }
+
+let todoReducer = Reducer<Todo, TodoAction, TodoEnvironment> { state, action, environment in
+  switch action {
+  case .checkboxTapped:
+    state.isComplete.toggle()
+    return .none
+  case .textFieldChanged(let text):
+    state.description = text
+    return .none
+  }
+  
 }
 
 /**************************
@@ -23,9 +49,13 @@ struct AppState: Equatable {
   var todos: [Todo] = []
 }
 
+
+
 enum AppAction {
-  case todoCheckboxTapped(index: Int)
-  case todoTextFieldChanged(index: Int, text: String)
+  //single row action, index:
+  case todo(index: Int, action: TodoAction)
+  //  case todoCheckboxTapped(index: Int)
+  //  case todoTextFieldChanged(index: Int, text: String)
 }
 
 struct AppEnvironment {}
@@ -34,17 +64,24 @@ struct AppEnvironment {}
  APP REDUCER
  **************************/
 //hand closure to the initializer of Reducer:
-let appReducer = Reducer<AppState, AppAction, AppEnvironment> { state, action, environment in
-  switch action {
-    //business logic
-  case .todoCheckboxTapped(index: let index):
-    state.todos[index].isComplete.toggle()
-    return .none
-  case .todoTextFieldChanged(index: let index, text: let text):
-    state.todos[index].description = text
-    return .none
-  }
-}.debug()
+let appReducer: Reducer<AppState,AppAction, AppEnvironment> = todoReducer.forEach(
+  state: \AppState.todos,
+  action: /AppAction.todo(index:action:),
+  environment: { _ in TodoEnvironment() }
+)
+  .debug()
+
+//  Reducer<AppState, AppAction, AppEnvironment> { state, action, environment in
+//  switch action {
+//    //business logic
+//  case .todoCheckboxTapped(index: let index):
+//    state.todos[index].isComplete.toggle()
+//    return .none
+//  case .todoTextFieldChanged(index: let index, text: let text):
+//    state.todos[index].description = text
+//    return .none
+//  }
+//}.debug()
 
 
 
@@ -55,23 +92,17 @@ struct ContentView: View {
     WithViewStore(self.store) { viewStore in
       NavigationView {
         List {
-          ForEach(Array(viewStore.state.todos.enumerated()), id: \.element.id) { index, todo in
-            HStack {
-              Button(action: { viewStore.send(.todoCheckboxTapped(index: index))}) {
-                Image(systemName: todo.isComplete ? "checkmark.square" : "square")
-              }
-                .buttonStyle(PlainButtonStyle()) //prevent entire row from being selected
-              TextField("Untitled todo",
-                        text: viewStore.binding(
-                          get: { $0.todos[index].description },
-                          send: { .todoTextFieldChanged(index: index, text: $0)}
-                )
-                /*.constant(todo.description)*/
-              )
-              //Text(todo.description)
-            }
-            .foregroundColor(todo.isComplete ? .gray : nil)
+          ForEachStore(
+            self.store.scope(
+              //get local from global
+              state: \.todos, //{ $0.todos },
+              //embed local into global domain
+              action:  AppAction.todo(index:action:) )
+          ) { todoStore in
+            //below was wrapped in another WithViewStore(todoStore)...
+            TodoView(store: todoStore)
           }
+          
         }
         .navigationBarTitle("Todos")
       }
@@ -105,5 +136,27 @@ struct ContentView_Previews: PreviewProvider {
         reducer: appReducer,
         environment: AppEnvironment())
     )
+  }
+}
+
+struct TodoView: View {
+  let store: Store<Todo, TodoAction>
+  
+  var body: some View {
+    WithViewStore(self.store) { viewStore in
+      HStack {
+        Button(action: { viewStore.send(.checkboxTapped) }) {
+          Image(systemName: viewStore.isComplete ? "checkmark.square" : "square")
+        }
+        .buttonStyle(PlainButtonStyle())
+        TextField("Untitled todo",
+                  text: viewStore.binding(
+                    get: \.description,
+                    send: TodoAction.textFieldChanged
+          )
+        )
+      }
+      .foregroundColor(viewStore.isComplete ? .gray : nil)
+    }
   }
 }

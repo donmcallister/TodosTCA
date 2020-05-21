@@ -22,7 +22,7 @@ struct Todo: Equatable, Identifiable {
 //want a reducer to focus on domain of a single todo:
 // ForEach higher order reducer to abstract away lists of states
 // notice no index passed in and no "todo" preceding case name
-enum TodoAction {
+enum TodoAction: Equatable {
   case checkboxTapped
   case textFieldChanged(String)
 }
@@ -51,37 +51,38 @@ struct AppState: Equatable {
 
 
 
-enum AppAction {
+enum AppAction: Equatable {
   //single row action, index:
   case todo(index: Int, action: TodoAction)
-  //  case todoCheckboxTapped(index: Int)
-  //  case todoTextFieldChanged(index: Int, text: String)
+  case addButtonTapped
 }
 
-struct AppEnvironment {}
+struct AppEnvironment {
+  var uuid: () -> UUID //exact shape of uuid initializer
+}
 
 /**************************
  APP REDUCER
  **************************/
-//hand closure to the initializer of Reducer:
-let appReducer: Reducer<AppState,AppAction, AppEnvironment> = todoReducer.forEach(
-  state: \AppState.todos,
-  action: /AppAction.todo(index:action:),
-  environment: { _ in TodoEnvironment() }
+let appReducer = Reducer<AppState,AppAction, AppEnvironment>.combine(
+  todoReducer.forEach(
+    state: \AppState.todos,
+    action: /AppAction.todo(index:action:),
+    environment: { _ in TodoEnvironment() }
+  ),
+  Reducer { state, action, environment in
+    switch action {
+    case .todo(index: let index, action: let action):
+      //where you could layer additional todo actions
+      return .none
+    case .addButtonTapped:
+      state.todos.insert(Todo(id: environment.uuid()), at: 0)
+      return .none
+    }
+  }
 )
   .debug()
 
-//  Reducer<AppState, AppAction, AppEnvironment> { state, action, environment in
-//  switch action {
-//    //business logic
-//  case .todoCheckboxTapped(index: let index):
-//    state.todos[index].isComplete.toggle()
-//    return .none
-//  case .todoTextFieldChanged(index: let index, text: let text):
-//    state.todos[index].description = text
-//    return .none
-//  }
-//}.debug()
 
 
 
@@ -93,18 +94,14 @@ struct ContentView: View {
       NavigationView {
         List {
           ForEachStore(
-            self.store.scope(
-              //get local from global
-              state: \.todos, //{ $0.todos },
-              //embed local into global domain
-              action:  AppAction.todo(index:action:) )
-          ) { todoStore in
-            //below was wrapped in another WithViewStore(todoStore)...
-            TodoView(store: todoStore)
-          }
-          
+            self.store.scope(state: \.todos, action: AppAction.todo(index:action:)),
+            content: TodoView.init(store:)
+          )
         }
         .navigationBarTitle("Todos")
+        .navigationBarItems(trailing: Button("Add") {
+          viewStore.send(.addButtonTapped)
+        })
       }
     }
   }
@@ -134,7 +131,10 @@ struct ContentView_Previews: PreviewProvider {
           ]
         ),
         reducer: appReducer,
-        environment: AppEnvironment())
+        environment: AppEnvironment(
+          uuid: UUID.init
+        )
+      )
     )
   }
 }

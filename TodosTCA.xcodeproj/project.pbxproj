@@ -14,7 +14,18 @@
 		94E1FE992476FC5200054E45 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94E1FE982476FC5200054E45 /* Preview Assets.xcassets */; };
 		94E1FE9C2476FC5200054E45 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 94E1FE9A2476FC5200054E45 /* LaunchScreen.storyboard */; };
 		94E1FEA52476FCAB00054E45 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 94E1FEA42476FCAB00054E45 /* ComposableArchitecture */; };
+		94E1FEAD24771DAA00054E45 /* TodosTCATests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E1FEAC24771DAA00054E45 /* TodosTCATests.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		94E1FEAF24771DAA00054E45 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 94E1FE842476FC5100054E45 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 94E1FE8B2476FC5100054E45;
+			remoteInfo = TodosTCA;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		94E1FE8C2476FC5100054E45 /* TodosTCA.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodosTCA.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -25,6 +36,9 @@
 		94E1FE982476FC5200054E45 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		94E1FE9B2476FC5200054E45 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		94E1FE9D2476FC5200054E45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		94E1FEAA24771DAA00054E45 /* TodosTCATests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TodosTCATests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		94E1FEAC24771DAA00054E45 /* TodosTCATests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodosTCATests.swift; sourceTree = "<group>"; };
+		94E1FEAE24771DAA00054E45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +50,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		94E1FEA724771DAA00054E45 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -43,6 +64,7 @@
 			isa = PBXGroup;
 			children = (
 				94E1FE8E2476FC5100054E45 /* TodosTCA */,
+				94E1FEAB24771DAA00054E45 /* TodosTCATests */,
 				94E1FE8D2476FC5100054E45 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -51,6 +73,7 @@
 			isa = PBXGroup;
 			children = (
 				94E1FE8C2476FC5100054E45 /* TodosTCA.app */,
+				94E1FEAA24771DAA00054E45 /* TodosTCATests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -77,6 +100,15 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		94E1FEAB24771DAA00054E45 /* TodosTCATests */ = {
+			isa = PBXGroup;
+			children = (
+				94E1FEAC24771DAA00054E45 /* TodosTCATests.swift */,
+				94E1FEAE24771DAA00054E45 /* Info.plist */,
+			);
+			path = TodosTCATests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -100,6 +132,24 @@
 			productReference = 94E1FE8C2476FC5100054E45 /* TodosTCA.app */;
 			productType = "com.apple.product-type.application";
 		};
+		94E1FEA924771DAA00054E45 /* TodosTCATests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 94E1FEB124771DAA00054E45 /* Build configuration list for PBXNativeTarget "TodosTCATests" */;
+			buildPhases = (
+				94E1FEA624771DAA00054E45 /* Sources */,
+				94E1FEA724771DAA00054E45 /* Frameworks */,
+				94E1FEA824771DAA00054E45 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				94E1FEB024771DAA00054E45 /* PBXTargetDependency */,
+			);
+			name = TodosTCATests;
+			productName = TodosTCATests;
+			productReference = 94E1FEAA24771DAA00054E45 /* TodosTCATests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -112,6 +162,10 @@
 				TargetAttributes = {
 					94E1FE8B2476FC5100054E45 = {
 						CreatedOnToolsVersion = 11.4;
+					};
+					94E1FEA924771DAA00054E45 = {
+						CreatedOnToolsVersion = 11.4;
+						TestTargetID = 94E1FE8B2476FC5100054E45;
 					};
 				};
 			};
@@ -132,6 +186,7 @@
 			projectRoot = "";
 			targets = (
 				94E1FE8B2476FC5100054E45 /* TodosTCA */,
+				94E1FEA924771DAA00054E45 /* TodosTCATests */,
 			);
 		};
 /* End PBXProject section */
@@ -144,6 +199,13 @@
 				94E1FE9C2476FC5200054E45 /* LaunchScreen.storyboard in Resources */,
 				94E1FE992476FC5200054E45 /* Preview Assets.xcassets in Resources */,
 				94E1FE962476FC5200054E45 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		94E1FEA824771DAA00054E45 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,7 +222,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		94E1FEA624771DAA00054E45 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				94E1FEAD24771DAA00054E45 /* TodosTCATests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		94E1FEB024771DAA00054E45 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 94E1FE8B2476FC5100054E45 /* TodosTCA */;
+			targetProxy = 94E1FEAF24771DAA00054E45 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		94E1FE9A2476FC5200054E45 /* LaunchScreen.storyboard */ = {
@@ -326,6 +404,44 @@
 			};
 			name = Release;
 		};
+		94E1FEB224771DAA00054E45 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = TodosTCATests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.donaldmcallister.TodosTCATests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TodosTCA.app/TodosTCA";
+			};
+			name = Debug;
+		};
+		94E1FEB324771DAA00054E45 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = TodosTCATests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.donaldmcallister.TodosTCATests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TodosTCA.app/TodosTCA";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -343,6 +459,15 @@
 			buildConfigurations = (
 				94E1FEA12476FC5200054E45 /* Debug */,
 				94E1FEA22476FC5200054E45 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		94E1FEB124771DAA00054E45 /* Build configuration list for PBXNativeTarget "TodosTCATests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				94E1FEB224771DAA00054E45 /* Debug */,
+				94E1FEB324771DAA00054E45 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

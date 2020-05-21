@@ -43,10 +43,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             ]
           ),
           reducer: appReducer,
-          environment: AppEnvironment())
+          environment: AppEnvironment(
+            uuid: UUID.init
+        ))
       )
-
-        // Use a UIHostingController as window root view controller.
+      
+      // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
             window.rootViewController = UIHostingController(rootView: contentView)

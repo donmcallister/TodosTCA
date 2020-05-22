@@ -29,6 +29,7 @@ enum TodoAction: Equatable {
 
 struct TodoEnvironment { }
 
+//can't sort in here since only working on a single Todo
 let todoReducer = Reducer<Todo, TodoAction, TodoEnvironment> { state, action, environment in
   switch action {
   case .checkboxTapped:
@@ -55,6 +56,7 @@ enum AppAction: Equatable {
   //single row action, index:
   case todo(index: Int, action: TodoAction)
   case addButtonTapped
+  case todoDelayCompleted
 }
 
 struct AppEnvironment {
@@ -72,11 +74,54 @@ let appReducer = Reducer<AppState,AppAction, AppEnvironment>.combine(
   ),
   Reducer { state, action, environment in
     switch action {
+    
+    case .todo(index: _, action: .checkboxTapped):
+      struct CancelDelayId: Hashable {} //visible only in this scope!
+      
+      return Effect(value: AppAction.todoDelayCompleted)
+        .delay(for: 1, scheduler: DispatchQueue.main)
+        .eraseToEffect()
+        .cancellable(id: CancelDelayId(), cancelInFlight: true)
+      
+     /* second, correct approach, but cancellable has a cancelInFlight to clean up further, see above
+      return .concatenate(
+        Effect.cancel(id: "completion effect"), //cancel any current effect, then proceed:
+        
+        Effect(value: AppAction.todoDelayCompleted)
+          .delay(for: 1, scheduler: DispatchQueue.main) //need to reset/cancel the 1 sec delay
+          .eraseToEffect()
+          .cancellable(id: "completion effect")
+      )
+       */
+      
+     /* first naive approach to DELAY:
+      return Effect.fireAndForget {
+        // put sorting work in here? nope it'll capture inout state
+        // because we're in an escaping closure, this might mutate value at a future unknown time. We must do this delay instead through sending an Action in.
+      }
+      .delay(for: 1, scheduler: DispatchQueue.main)
+      .eraseToEffect()
+ */
+      
+//      state.todos = state.todos.enumerated().sorted { lhs, rhs in
+//        (!lhs.element.isComplete && rhs.element.isComplete) || lhs.offset < rhs.offset
+//      }
+//      .map { $0.element } //pluck out element, discard the offset
+      
+     // return .none
+      
     case .todo(index: let index, action: let action):
       //where you could layer additional todo actions
       return .none
+      
     case .addButtonTapped:
       state.todos.insert(Todo(id: environment.uuid()), at: 0)
+      return .none
+    case .todoDelayCompleted:
+      state.todos = state.todos.enumerated().sorted { lhs, rhs in
+        (!lhs.element.isComplete && rhs.element.isComplete) || lhs.offset < rhs.offset
+      }
+        .map { $0.element } //pluck out element, discard the offset
       return .none
     }
   }

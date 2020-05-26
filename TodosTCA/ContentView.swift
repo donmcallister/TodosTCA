@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Combine
 import ComposableArchitecture
 
 /**************************
@@ -60,6 +61,7 @@ enum AppAction: Equatable {
 }
 
 struct AppEnvironment {
+  var mainQueue: AnySchedulerOf<DispatchQueue>  //AnyScheduler<DispatchQueue.SchedulerTimeType, DispatchQueue.SchedulerOptions>
   var uuid: () -> UUID //exact shape of uuid initializer
 }
 
@@ -79,9 +81,10 @@ let appReducer = Reducer<AppState,AppAction, AppEnvironment>.combine(
       struct CancelDelayId: Hashable {} //visible only in this scope!
       
       return Effect(value: AppAction.todoDelayCompleted)
-        .delay(for: 1, scheduler: DispatchQueue.main)
-        .eraseToEffect()
-        .cancellable(id: CancelDelayId(), cancelInFlight: true)
+        .debounce(id: CancelDelayId(), for: 1, scheduler: environment.mainQueue) // dispatchQue is unintended side effect!!
+//        .delay(for: 1, scheduler: DispatchQueue.main)
+//        .eraseToEffect()
+//        .cancellable(id: CancelDelayId(), cancelInFlight: true)
       
      /* second, correct approach, but cancellable has a cancelInFlight to clean up further, see above
       return .concatenate(
@@ -177,6 +180,7 @@ struct ContentView_Previews: PreviewProvider {
         ),
         reducer: appReducer,
         environment: AppEnvironment(
+          mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
           uuid: UUID.init
         )
       )
